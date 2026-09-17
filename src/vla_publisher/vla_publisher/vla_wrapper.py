@@ -55,7 +55,6 @@ class VLAWrapper(Node):
 
         self.publisher_.publish(pose)
         self.get_logger().info('Publishing pose message: %s' % pose)
-        self.get_logger().info('Publishing pose message')
 
 
 def main(args=None):
