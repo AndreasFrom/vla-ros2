@@ -9,6 +9,11 @@ have you setup realsense. For this project we update it to work with lyrical lut
 source /opt/ros/lyrical/setup.bash
 source ~/realsense_ws/install/setup.bash
 source ~/perception_ws/install/setup.bash
+
+```bash
+source /opt/ros/lyrical/setup.bash
+source ~/realsense_ws/install/setup.bash
+source ~/vla-ros2/install/setup.bash
 ```
 
 ## Build
