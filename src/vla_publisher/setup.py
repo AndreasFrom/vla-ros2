@@ -27,6 +27,8 @@ setup(
     entry_points={
     'console_scripts': [
         'vla_wrapper = vla_publisher.vla_wrapper:main',
-        ],
+        'dummy_pose_sender = vla_publisher.dummy_publishers.dummy_pose_sender:main',
+        'dummy_image_sender = vla_publisher.dummy_publishers.dummy_image_sender:main',
+    ],
     },
 )
