@@ -46,11 +46,7 @@ preprocess, postprocess = make_pre_post_processors(
     preprocessor_overrides={"device_processor": {"device": str(device)}},
 )
 
-# STACK OVERFLOW
-# 2. Load video and extract frames
-vidcap = cv2.VideoCapture('video1.mp4')
-success,image = vidcap.read()
-print('Read a new frame: ', success)
+
 
 count = 0
 length_total = 0

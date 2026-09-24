@@ -4,6 +4,15 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Pose
 
+from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+from lerobot.policies.factory import make_pre_post_processors
+
+import torch
+from PIL import Image
+import torchvision.transforms.functional as TF
+
+# Derefter kører dine normale imports uden fejl:
+
 
 class VLAWrapper(Node):
 
@@ -42,7 +51,29 @@ class VLAWrapper(Node):
         image = msg 
         ### Ufyld VLA kode her ###
 
-        ### nedtil her ### og så laver vi pose 
+        img_tensor = TF.to_tensor(image).to(device)
+        
+        # 3. Opret observation-dictionary med billeder, robot-tilstand og opgave-instruktion
+        frame = {
+            "task": "Fold the t-shirt",
+        }
+        print(policy.config.input_features["observation.state"].shape)
+        # Tilføj billedet til alle kamera-nøgler
+        for cam_key in policy.config.image_features:
+            frame[cam_key] = img_tensor
+    
+        # Tilføj dummy robot-tilstand (nulpunkter), da der ikke er en fysisk robot tilsluttet
+        frame["observation.state"] = torch.zeros(7, device=device)
+        # på sigt  robot = URController(), robot.get_current_positions(), # gripper = GripperController(node) Hvordan får man gripper position
+    
+        batch = preprocess(frame)
+        with torch.inference_mode():
+            pred_action = policy.select_action(batch)
+            pred_action = postprocess(pred_action)
+    
+        print("\n--- Forudsagte Gripper Koordinater & Handling ---")
+        print("Action shape:", pred_action.shape)
+        print("Gripper action (x, y, z, rotation, gripper):", pred_action.cpu().numpy())
 
         # VLA laver pose some bliver sendt videre til piblisheren 
         pose = self.create_dummy_pose()
